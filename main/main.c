@@ -11,6 +11,7 @@
 #include "managers/ble_manager.h"
 #endif
 #include <esp_log.h>
+#include <gpio_viewer.h>
 
 #ifdef CONFIG_WITH_ETHERNET
 // TODO
@@ -20,11 +21,28 @@
 #include "managers/views/splash_screen.h"
 #endif
 
+GPIOViewer gpio_viewer;
+void setup()
+{
+  Serial.begin(115200);
+
+  // Comment the next line, If your code aleady include connection to Wifi in mode WIFI_STA (WIFI_AP and WIFI_AP_STA are not supported)
+  gpio_viewer.connectToWifi("Your SSID network", "Your WiFi Password");
+  // gpio_viewer.setPort(5555);   // You can set the http port, if not set default port is 8080
+
+  // Your own setup code start here
+
+  // Must be at the end of your setup
+  // gpio_viewer.setSamplingInterval(25); // You can set the sampling interval in ms, if not set default is 100ms
+  gpio_viewer.begin();
+}
+
 int ieee80211_raw_frame_sanity_check(int32_t arg, int32_t arg2, int32_t arg3) { return 0; }
 
 void app_main(void) {
     serial_manager_init();
     wifi_manager_init();
+    
 #ifndef CONFIG_IDF_TARGET_ESP32S2
     // ble_init();
 #endif
